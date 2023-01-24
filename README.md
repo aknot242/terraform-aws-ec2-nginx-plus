@@ -5,7 +5,7 @@ Create an NGINX Plus AWS EC2 Instance in the designated environment.
 ## Terraform Variables
 
 | Variable  | Description  | Default Value |
-|---|---|
+|---|---|---|
 | associate_public_ip_address | Boolean value as to whether to associate a public IP address with the instance | |
 | aws_access_key | AWS access key | |
 | aws_secret_key | AWS secret key | |
@@ -23,13 +23,35 @@ Create an NGINX Plus AWS EC2 Instance in the designated environment.
 
 ## Usage
 
+NGINX Plus:
+
 ```hcl
 module "nginx-plus" {
   source                 = "codygreen/ec2-nginx-plus"
   aws_access_key         = aws_access_key
   aws_secret_key         = aws_secret_key
-  nginx_repo_crt = nginx_repo_crt
+  nginx_repo_crt         = nginx_repo_crt
   nginx_repo_key         = nginx_repo_key
+  key_name               = mykey
+  owner_name             = "John Doe"
+  owner_email            = j.doe@nginx.com
+  subnet_id              = subnet_1245
+  vpc_security_group_ids = ["sg_2485023940284"]
+}
+```
+
+NGINX Plus with Agent connected to NMS:
+
+```hcl
+module "nginx-plus" {
+  source                 = "codygreen/ec2-nginx-plus"
+  aws_access_key         = aws_access_key
+  aws_secret_key         = aws_secret_key
+  nginx_agent_crt        = nginx_agent_crt
+  nginx_agent_key        = nginx_agent_key
+  nginx_repo_crt         = nginx_repo_crt
+  nginx_repo_key         = nginx_repo_key
+  nms_host               = nms_host.example.com
   key_name               = mykey
   owner_name             = "John Doe"
   owner_email            = j.doe@nginx.com
