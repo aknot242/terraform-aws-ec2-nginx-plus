@@ -2,6 +2,8 @@
 
 Create an NGINX Plus AWS EC2 Instance in the designated environment.
 
+> Note: an NGINX Plus repository certificate and key are required for this deployment
+
 ## Terraform Variables
 
 | Variable  | Description  | Default Value |
@@ -27,7 +29,7 @@ NGINX Plus:
 
 ```hcl
 module "nginx-plus" {
-  source                 = "codygreen/ec2-nginx-plus"
+  source                 = "f5devcentral/ec2-nginx-plus"
   aws_access_key         = aws_access_key
   aws_secret_key         = aws_secret_key
   nginx_repo_crt         = nginx_repo_crt
@@ -44,7 +46,7 @@ NGINX Plus with Agent connected to NMS:
 
 ```hcl
 module "nginx-plus" {
-  source                 = "codygreen/ec2-nginx-plus"
+  source                 = "f5devcentral/ec2-nginx-plus"
   aws_access_key         = aws_access_key
   aws_secret_key         = aws_secret_key
   nginx_agent_crt        = nginx_agent_crt
