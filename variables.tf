@@ -53,11 +53,11 @@ variable "owner_email" {
 }
 variable "subnet_id" {
   type        = string
-  description = "VCP Subnet ID"
+  description = "VPC Subnet ID"
 }
 variable "vpc_security_group_ids" {
   type        = list(any)
-  description = "List of VCP Security Group IDs"
+  description = "List of VPC Security Group IDs"
 }
 locals {
   owner_name_safe = lower(replace(var.owner_name, " ", "-"))

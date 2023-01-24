@@ -21,7 +21,7 @@ Create an NGINX Plus AWS EC2 Instance in the designated environment.
 | owner_name  | Name of user deploying Terraform - for AWS resource tagging  | |
 | owner_email | Email of user deploying Terraform - for AWS resource tagging | |
 | subnet_id | AWS VPC Subnet ID | |
-| vcp_security_group_ids | List of AWS Security Groups for the EC2 instance | |
+| vpc_security_group_ids | List of AWS Security Groups for the EC2 instance | |
 
 ## Usage
 
