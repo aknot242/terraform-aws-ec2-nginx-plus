@@ -20,24 +20,6 @@ variable "key_name" {
   type        = string
   description = "AWS EC2 SSH key name"
 }
-variable "nginx_agent_crt" {
-  type        = string
-  description = "NGINX Agent Certificate"
-  default     = null
-}
-variable "nginx_agent_key" {
-  type        = string
-  description = "NGINX Agent Key"
-  default     = null
-}
-variable "nginx_repo_crt" {
-  type        = string
-  description = "NGINX Repository Certificate"
-}
-variable "nginx_repo_key" {
-  type        = string
-  description = "NGINX Repository Key"
-}
 variable "nms_host" {
   type        = string
   description = "NMS Host FQDN"

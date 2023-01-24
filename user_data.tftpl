@@ -1,0 +1,67 @@
+#cloud-config
+---
+update_hostname: ${hostname}
+package_update: true
+package_upgrade: true
+write_files:
+  - path: /etc/apt/apt.conf.d/90pkgs-nginx
+    owner: root
+    permissions: "0644"
+    content: |
+      Acquire::https::pkgs.nginx.com::Verify-Peer "true";
+      Acquire::https::pkgs.nginx.com::Verify-Host "true";
+      Acquire::https::pkgs.nginx.com::SslCert "/etc/ssl/nginx/nginx-repo.crt";
+      Acquire::https::pkgs.nginx.com::SslKey "/etc/ssl/nginx/nginx-repo.key";
+  - path: /etc/ssl/nginx/nginx-repo.crt
+    owner: root
+    permissions: "0644"
+    encoding: b64
+    content: |
+      ${nginx-repo-crt}
+  - path: /etc/ssl/nginx/nginx-repo.key
+    owner: root
+    permissions: "0644"
+    encoding: b64
+    content: |
+      ${nginx-repo-key}
+%{ if nginx-agent-crt != "" ~}
+  - path: /etc/ssl/nginx/agent.crt
+    owner: root
+    permissions: "0644"
+    encoding: b64
+    content: |
+      ${nginx-agent-crt}
+%{ endif ~}
+%{ if nginx-agent-key != "" ~}
+  - path: /etc/ssl/nginx/agent.key
+    owner: root
+    permissions: "0644"
+    encoding: b64
+    content: |
+      ${nginx-agent-key}
+%{ endif ~}
+apt:
+  preserve_sources_list: false
+  sources:
+    nginx-plus.list:
+      source: deb https://pkgs.nginx.com/plus/ubuntu $RELEASE nginx-plus
+      keyserver: https://cs.nginx.com/static/keys/nginx_signing.key
+      keyid: 7BD9BF62
+packages: 
+  - nginx-plus
+runcmd:
+  - [ hostnamectl, set-hostname, ${hostname} ]
+  - [ systemctl, start, nginx]
+%{ if nms_host != "" ~}
+  - curl --cert /etc/ssl/nginx/agent.crt --key /etc/ssl/nginx/agent.key https://${nms_host}/install/nginx-agent > install.sh
+  - sudo sh ./install.sh --skip-verify false
+  # Configure NGINX Agent
+  - snap install yq
+  # Note: snap sandboxes yq, so we need to copy the file out, modify, then copy back in
+  - sudo cp /etc/nginx-agent/nginx-agent.conf /home/ubuntu/
+  - sudo yq -i '.tls.skip_verify = false' /home/ubuntu/nginx-agent.conf
+  - sudo yq -i '.tls.cert = "/etc/ssl/nginx/agent.crt"' /home/ubuntu/nginx-agent.conf
+  - sudo yq -i '.tls.key = "/etc/ssl/nginx/agent.key"' /home/ubuntu/nginx-agent.conf
+  - sudo cp /home/ubuntu/nginx-agent.conf /etc/nginx-agent/nginx-agent.conf
+  - sudo systemctl start nginx-agent
+%{ endif ~}
